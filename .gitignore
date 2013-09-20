@@ -1,6 +1,9 @@
 # Object files
 *.o
 
+# Backupfiles
+*~
+
 # Libraries
 *.lib
 *.a
