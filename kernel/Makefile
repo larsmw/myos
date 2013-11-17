@@ -6,16 +6,11 @@ LDFLAGS=-ffreestanding -O2 -nostdlib
 
 VPATH = .:io
 
-myos.bin: boot.o kernel.o ports.o
+myos.bin: boot.o kernel.o io/pci.o io/ports.o
 	$(CC) -T linker.ld -o $@ $(LDFLAGS) $? -lgcc
 
 kernel.o: kernel.c
 	$(CC) -c $^ -o $@ $(CFLAGS)
 
-#io.o: ports.c
-#	$(CC) -c $^ -o $@ $(CFLAGS)
-
 boot.o: boot.s
 	$(AS) $^ -o $@
-
-ports.o: ports.h
