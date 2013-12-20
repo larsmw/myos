@@ -13,4 +13,4 @@ kernel.o: kernel.c
 	$(CC) -c $^ -o $@ $(CFLAGS)
 
 boot.o: boot.s
-	$(AS) $^ -o $@
+	$(AS) --32 $^ -o $@

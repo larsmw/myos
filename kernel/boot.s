@@ -5,6 +5,8 @@
 .set MAGIC,    0x1BADB002       # 'magic number' lets bootloader find the header
 .set CHECKSUM, -(MAGIC + FLAGS) # checksum of above, to prove we are multiboot
 
+
+
 # Declare a header as in the Multiboot Standard. We put this into a special
 # section so we can force the header to be in the start of the final program.
 # You don't need to understand all these details as it is just magic values that
@@ -25,6 +27,62 @@ stack_bottom:
 .skip 16384 # 16 KiB
 stack_top:
 
+
+
+
+
+
+
+InstallGDT:
+ 
+	cli				# clear interrupts
+	pusha				# save registers
+	lgdt 	toc			# load GDT into GDTR
+	sti				# enable interrupts
+	popa				# restore registers
+	ret				# All done!
+ 
+#*******************************************
+# Global Descriptor Table (GDT)
+#*******************************************
+ 
+gdt_data: 
+	.long 0 				# null descriptor
+	.long 0 
+ 
+# gdt code:				# code descriptor
+	.long 0xFFFF 			# limit low
+	.long 0 			# base low
+	.long 0 				# base middle
+	.long 0b10011010 			# access
+	.long 0b11001111 			# granularity
+	.long 0 				# base high
+ 
+# gdt data:				# data descriptor
+	.long 0xFFFF 			# limit low (Same as code)
+	.long 0 				# base low
+	.long 0 				# base middle
+	.long 0b10010010 			# access
+	.long 0b11001111 			# granularity
+	.long 0				# base high
+ 
+end_of_gdt:
+toc: 
+	.long end_of_gdt - gdt_data - 1 	# limit (Size of GDT)
+	.long gdt_data 			# base of GDT
+
+
+
+
+
+
+
+
+
+
+
+
+	
 # The linker script specifies _start as the entry point to the kernel and the
 # bootloader will jump to this position once the kernel has been loaded. It
 # doesn't make sense to return from this function as the bootloader is gone.
@@ -42,7 +100,7 @@ _start:
 	# you get to make the entire system yourself. You have absolute and complete
 	# power over the machine, there are no security restrictions, no safe
 	# guards, no debugging mechanisms, there is nothing but what you build.
-
+	
 	# By now, you are perhaps tired of assembly language. You realize some
 	# things simply cannot be done in C, such as making the multiboot header in
 	# the right section and setting up the stack. However, you would like to
@@ -56,6 +114,26 @@ _start:
 	# our stack (as it grows downwards).
 	movl $stack_top, %esp
 
+
+	cli				# clear interrupts
+	xor	%ax, %ax			# null segments
+	mov	%ds, %ax
+	mov	%es, %ax
+	mov	%ax, 0x9000		# stack begins at 0x9000-0xffff
+	mov	%ss, %ax
+	mov	%sp, 0xFFFF
+	sti				# enable interrupts
+
+
+	call InstallGDT
+	
+
+	cli				# clear interrupts
+	mov	%eax, %cr0		# set bit 0 in cr0--enter pmode
+	or	%eax, 1
+	mov	%cr0, %eax
+	
+	
 	# We are now ready to actually execute C code. We cannot embed that in an
 	# assembly file, so we'll create a kernel.c file in a moment. In that file,
 	# we'll create a C entry point called kernel_main and call it here.
@@ -75,3 +153,4 @@ _start:
 # Set the size of the _start symbol to the current location '.' minus its start.
 # This is useful when debugging or when you implement call tracing.
 .size _start, . - _start
+
