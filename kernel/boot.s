@@ -33,43 +33,43 @@ stack_top:
 
 
 
-InstallGDT:
+#InstallGDT:
  
-	cli				# clear interrupts
-	pusha				# save registers
-	lgdt 	toc			# load GDT into GDTR
-	sti				# enable interrupts
-	popa				# restore registers
-	ret				# All done!
+#	cli				# clear interrupts
+#	pushq $0			# save registers
+#	lgdt 	toc			# load GDT into GDTR
+#	sti				# enable interrupts
+#	popfq				# restore registers
+#	ret				# All done!
  
 #*******************************************
 # Global Descriptor Table (GDT)
 #*******************************************
  
-gdt_data: 
-	.long 0 				# null descriptor
-	.long 0 
+#gdt_data: 
+#	.long 0 				# null descriptor
+#	.long 0 
  
 # gdt code:				# code descriptor
-	.long 0xFFFF 			# limit low
-	.long 0 			# base low
-	.long 0 				# base middle
-	.long 0b10011010 			# access
-	.long 0b11001111 			# granularity
-	.long 0 				# base high
+#	.long 0xFFFF 			# limit low
+#	.long 0 			# base low
+#	.long 0 				# base middle
+#	.long 0b10011010 			# access
+#	.long 0b11001111 			# granularity
+#	.long 0 				# base high
  
 # gdt data:				# data descriptor
-	.long 0xFFFF 			# limit low (Same as code)
-	.long 0 				# base low
-	.long 0 				# base middle
-	.long 0b10010010 			# access
-	.long 0b11001111 			# granularity
-	.long 0				# base high
+#	.long 0xFFFF 			# limit low (Same as code)
+#	.long 0 				# base low
+#	.long 0 				# base middle
+#	.long 0b10010010 			# access
+#	.long 0b11001111 			# granularity
+#	.long 0				# base high
  
-end_of_gdt:
-toc: 
-	.long end_of_gdt - gdt_data - 1 	# limit (Size of GDT)
-	.long gdt_data 			# base of GDT
+#end_of_gdt:
+#toc: 
+#	.long end_of_gdt - gdt_data - 1 	# limit (Size of GDT)
+#	.long gdt_data 			# base of GDT
 
 
 
@@ -88,7 +88,7 @@ toc:
 # doesn't make sense to return from this function as the bootloader is gone.
 .section .text
 .global _start
-.type _start, @function
+#.type _start, @function
 _start:
 	# Welcome to kernel mode! We now have sufficient code for the bootloader to
 	# load and run our operating system. It doesn't do anything interesting yet.
@@ -116,22 +116,22 @@ _start:
 
 
 	cli				# clear interrupts
-	xor	%ax, %ax			# null segments
-	mov	%ds, %ax
-	mov	%es, %ax
-	mov	%ax, 0x9000		# stack begins at 0x9000-0xffff
-	mov	%ss, %ax
-	mov	%sp, 0xFFFF
+	xor	%eax, %eax			# null segments
+	movl	%ds, %eax
+	movl	%es, %eax
+	movl	%eax, 0x9000		# stack begins at 0x9000-0xffff
+	movl	%ss, %eax
+	movl	%esp, 0xFFFF
 	sti				# enable interrupts
 
 
-	call InstallGDT
+	#call InstallGDT
 	
 
 	cli				# clear interrupts
-	mov	%eax, %cr0		# set bit 0 in cr0--enter pmode
-	or	%eax, 1
-	mov	%cr0, %eax
+	#movl	%eax, %cr0		# set bit 0 in cr0--enter pmode
+	#or	%eax, 1
+	#movl	%cr0, %eax
 	
 	
 	# We are now ready to actually execute C code. We cannot embed that in an

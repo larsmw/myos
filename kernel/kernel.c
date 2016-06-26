@@ -5,9 +5,9 @@
 #include <stdint.h>
  
 /* Check if the compiler thinks if we are targeting the wrong operating system. */
-#if defined(__linux__)
-#error "You are not using a cross-compiler, you will most certainly run into trouble"
-#endif
+//#if defined(__linux__)
+//#error "You are not using a cross-compiler, you will most certainly run into trouble"
+//#endif
 
 /**
  * 
@@ -38,7 +38,7 @@ enum vga_color
 	COLOR_LIGHT_MAGENTA = 13,
 	COLOR_LIGHT_BROWN = 14,
 	COLOR_WHITE = 15,
-};
+	};
  
 uint8_t make_color(enum vga_color fg, enum vga_color bg)
 {
@@ -114,14 +114,27 @@ void terminal_writestring(const char* data)
 	for ( size_t i = 0; i < datalen; i++ )
 		terminal_putchar(data[i]);
 }
- 
+
 #if defined(__cplusplus)
 extern "C" /* Use C linkage for kernel_main. */
 #endif
 void kernel_main()
 {
-	terminal_initialize();
+  //terminal_initialize();
 	/* Since there is no support for newlines in terminal_putchar yet, \n will
 	   produce some VGA specific character instead. This is normal. */
-	terminal_writestring("Hello, kernel World!");
+  //terminal_writestring("Hello, kernel World!");
+  char* vidmem=(char*)0xb8000;
+  vidmem[0] = 'H';
+  vidmem[1] = 0x04;
+  vidmem[2] = 'E';
+  vidmem[3] = 0x04;
+  vidmem[4] = 'E';
+  vidmem[5] = 0x04;
+  vidmem[6] = 'E';
+  vidmem[7] = 0x04;
+  vidmem[8] = 'E';
+  vidmem[9] = 0x04;
+  vidmem[10] = 'E';
+  vidmem[11] = 0x04;
 }
