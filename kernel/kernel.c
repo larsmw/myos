@@ -120,11 +120,11 @@ extern "C" /* Use C linkage for kernel_main. */
 #endif
 void kernel_main()
 {
-  //terminal_initialize();
+  terminal_initialize();
 	/* Since there is no support for newlines in terminal_putchar yet, \n will
 	   produce some VGA specific character instead. This is normal. */
-  //terminal_writestring("Hello, kernel World!");
-  char* vidmem=(char*)0xb8000;
+  terminal_writestring("Hello, kernel World!");
+  /*  char* vidmem=(char*)0xb8000;
   vidmem[0] = 'H';
   vidmem[1] = 0x04;
   vidmem[2] = 'E';
@@ -136,5 +136,5 @@ void kernel_main()
   vidmem[8] = 'E';
   vidmem[9] = 0x04;
   vidmem[10] = 'E';
-  vidmem[11] = 0x04;
+  vidmem[11] = 0x04;*/
 }
