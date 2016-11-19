@@ -36,7 +36,7 @@ urllist=(
   http://www.mpfr.org/mpfr-3.1.3/mpfr-3.1.3.tar.xz
   http://ftp.gnu.org/gnu//gmp/gmp-6.0.0a.tar.xz
   http://www.multiprecision.org/mpc/download/mpc-1.0.3.tar.gz
-  http://ftp.gnu.org/gnu/gcc/gcc-4.9.3/gcc-4.9.3.tar.bz2
+  http://ftp.gnu.org/gnu/gcc/gcc-4.9.4/gcc-4.9.4.tar.bz2
   https://cdn.kernel.org/pub/linux/kernel/v4.x/linux-4.4.14.tar.xz
   )
 
@@ -74,15 +74,15 @@ cp -rv dest/include/* $TOOLS/include
 popd
 
 
-prepare_src gcc-4.9.3.tar.bz2 gcc-4.9.3
+prepare_src gcc-4.9.4.tar.bz2 gcc-4.9.4
 prepare_src mpfr-3.1.3.tar.xz .
-mv -v mpfr-3.1.3 gcc-4.9.3/mpfr
+mv -v mpfr-3.1.3 gcc-4.9.4/mpfr
 prepare_src gmp-6.0.0a.tar.xz .
-mv -v gmp-6.0.0 gcc-4.9.3/gmp
+mv -v gmp-6.0.0 gcc-4.9.4/gmp
 prepare_src mpc-1.0.3.tar.gz .
-mv -v mpc-1.0.3 gcc-4.9.3/mpc
+mv -v mpc-1.0.3 gcc-4.9.4/mpc
 
-pushd $BUILD_DIR/gcc-4.9.3
+pushd $BUILD_DIR/gcc-4.9.4
 
 for file in \
  $(find gcc/config -name linux64.h -o -name linux.h -o -name sysv4.h)
@@ -101,7 +101,7 @@ done
 mkdir -v $BUILD_DIR/gcc-build
 cd $BUILD_DIR/gcc-build
 
-$BUILD_DIR/gcc-4.9.3/configure                     \
+$BUILD_DIR/gcc-4.9.4/configure                     \
     --target=$SYS_TGT                              \
     --prefix=$TOOLS                                \
     --enable-languages=c,c++                       \
